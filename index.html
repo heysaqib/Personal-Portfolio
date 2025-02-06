@@ -232,26 +232,28 @@
 
     <section class="contact" id="contact">
         <h2 class="heading">Contact <span>Me</span></h2>
-
-        <form id="submit-form" action="">
-
+    
+        <form id="submit-form">
             <div class="input-grop">
                 <div class="input-box">
-                    <input type="text" placeholder="Full Name" id="name" name="fname">
-                    <input type="email" placeholder="Email" id="email" name="email">
+                    <input type="text" placeholder="Full Name" id="name" name="fname" required>
+                    <input type="email" placeholder="Email" id="email" name="email" required>
                 </div>
                 <div class="input-box">
-                    <input type="number" placeholder="Phone Number" id="number" name="number">
+                    <input type="number" placeholder="Phone Number" id="number" name="number" required>
                     <input type="text" placeholder="Subject" id="subject" name="subject">
                 </div>
             </div>
-
+    
             <div class="input-group-2">
-                <textarea name="" id="msg" cols="30" rows="10" placeholder="Your Message"></textarea>
-                <input type="submit" value="Send Message" class="btn">
+                <textarea name="message" id="msg" cols="30" rows="10" placeholder="Your Message" required></textarea>
+                <input type="submit" value="Send Message" class="btn" id="submit-btn">
             </div>
         </form>
+    
+        <div id="response-message"></div>
     </section>
+    
 
     <!-- Footer Section -->
 
@@ -280,30 +282,71 @@
             </li>
         </ul>
         <p class="copyright">
-            <span class="copyright-icon"><i class='bx bx-copyright'></i></span> Bijeesh Biju | All Right Reserved
+            <span class="copyright-icon"><i class='bx bx-copyright'></i></span> Saqib Shaikh | All Right Reserved
         </p>
 
     </footer>
 
-    <!-- Script for Form Submission -->
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        $("#submit-form").submit((e) => {
-            e.preventDefault()
+        $("#submit-form").submit(function (e) {
+            e.preventDefault(); // Prevent default form submission
+    
+            let isValid = true;
+            let requiredFields = ["#name", "#email", "#number", "#msg"];
+    
+            requiredFields.forEach(function (selector) {
+                if ($(selector).val().trim() === "") {
+                    isValid = false;
+                    $(selector).css("border", "2px solid red");
+                } else {
+                    $(selector).css("border", "");
+                }
+            });
+    
+            if (!isValid) {
+                $("#response-message")
+                    .text("⚠️ Please fill in all required fields (Name, Email, Phone, and Message)!")
+                    .removeClass("success")
+                    .addClass("error")
+                    .slideDown();
+                return;
+            }
+    
+            $("#submit-btn").val("Sending...").attr("disabled", true);
+            $("#response-message").hide();
+    
             $.ajax({
-                url: "https://script.google.com/macros/s/AKfycbyDgAM8dGsy_5Tg7-lrPefnV2y0QK9YAnZOR-41MHn5al9P1JfTHkDEGgMYg9yx943e/exec",
+                url: "https://script.google.com/macros/s/AKfycbwY910pz58WVAP0G3KBLTl_T7n83wjpiihLbD_QfKEqASmBCq3OajJEBgzbqLkgwrOKKA/exec",
                 data: $("#submit-form").serialize(),
-                method: "post",
+                method: "POST",
                 success: function (response) {
-                    alert("Form submitted successfully")
-                    window.location.reload()
-                    //window.location.href="https://google.com"
+                    console.log("Success:", response);
+                    $("#response-message")
+                        .html("✅ Thank you for reaching out! I will get back to you soon.")
+                        .removeClass("error")
+                        .addClass("success")
+                        .slideDown();
+                    $("#submit-form")[0].reset();
+                    // ✅ Make success message disappear after 5 seconds
+                setTimeout(function () {
+                    $("#response-message").slideUp();
+                }, 5000);
                 },
                 error: function (err) {
-                    alert("Something Error")
-
+                    console.log("Error:", err);
+                    $("#response-message")
+                        .html("❌ Oops! Something went wrong. Please try again later.")
+                        .removeClass("success")
+                        .addClass("error")
+                        .slideDown();
+                },
+                complete: function () {
+                    $("#submit-btn").val("Send Message").attr("disabled", false);
                 }
-            })
-        })
+            });
+        });
     </script>
 
     <script src="script.js"></script>
