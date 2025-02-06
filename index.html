@@ -232,7 +232,7 @@
 
     <section class="contact" id="contact">
         <h2 class="heading">Contact <span>Me</span></h2>
-    
+
         <form id="submit-form">
             <div class="input-grop">
                 <div class="input-box">
@@ -244,16 +244,16 @@
                     <input type="text" placeholder="Subject" id="subject" name="subject">
                 </div>
             </div>
-    
+
             <div class="input-group-2">
                 <textarea name="message" id="msg" cols="30" rows="10" placeholder="Your Message" required></textarea>
                 <input type="submit" value="Send Message" class="btn" id="submit-btn">
             </div>
         </form>
-    
+
         <div id="response-message"></div>
     </section>
-    
+
 
     <!-- Footer Section -->
 
@@ -287,57 +287,107 @@
 
     </footer>
 
-    
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $("#submit-form").submit(function (e) {
             e.preventDefault(); // Prevent default form submission
-    
+
             let isValid = true;
-            let requiredFields = ["#name", "#email", "#number", "#msg"];
-    
-            requiredFields.forEach(function (selector) {
-                if ($(selector).val().trim() === "") {
-                    isValid = false;
-                    $(selector).css("border", "2px solid red");
-                } else {
-                    $(selector).css("border", "");
-                }
-            });
-    
+            let errorMessage = "";
+
+            // Get input values
+            let name = $("#name").val().trim();
+            let email = $("#email").val().trim();
+            let number = $("#number").val().trim();
+            let subject = $("#subject").val().trim();
+            let message = $("#msg").val().trim();
+
+            // Regex patterns
+            let emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            let numberPattern = /^[0-9]{10}$/; // Only 10-digit numbers allowed
+
+            // Validation
+            if (name === "") {
+                isValid = false;
+                errorMessage = "⚠️ Name is required!";
+                $("#name").css("border", "2px solid red");
+            } else {
+                $("#name").css("border", "");
+            }
+
+            if (!emailPattern.test(email)) {
+                isValid = false;
+                errorMessage = "⚠️ Enter a valid email!";
+                $("#email").css("border", "2px solid red");
+            } else {
+                $("#email").css("border", "");
+            }
+
+            if (!numberPattern.test(number)) {
+                isValid = false;
+                errorMessage = "⚠️ Enter a valid 10-digit phone number!";
+                $("#number").css("border", "2px solid red");
+            } else {
+                $("#number").css("border", "");
+            }
+
+            if (message === "") {
+                isValid = false;
+                errorMessage = "⚠️ Message cannot be empty!";
+                $("#msg").css("border", "2px solid red");
+            } else {
+                $("#msg").css("border", "");
+            }
+
+            // Show validation error if any
             if (!isValid) {
                 $("#response-message")
-                    .text("⚠️ Please fill in all required fields (Name, Email, Phone, and Message)!")
+                    .text(errorMessage)
                     .removeClass("success")
                     .addClass("error")
                     .slideDown();
+
+                setTimeout(function () {
+                    $("#response-message").slideUp();
+                }, 5000);
+
                 return;
             }
-    
+
+            // Disable button while sending
             $("#submit-btn").val("Sending...").attr("disabled", true);
             $("#response-message").hide();
-    
+
             $.ajax({
                 url: "https://script.google.com/macros/s/AKfycbwY910pz58WVAP0G3KBLTl_T7n83wjpiihLbD_QfKEqASmBCq3OajJEBgzbqLkgwrOKKA/exec",
                 data: $("#submit-form").serialize(),
                 method: "POST",
                 success: function (response) {
-                    console.log("Success:", response);
-                    $("#response-message")
-                        .html("✅ Thank you for reaching out! I will get back to you soon.")
-                        .removeClass("error")
-                        .addClass("success")
-                        .slideDown();
-                    $("#submit-form")[0].reset();
-                    // ✅ Make success message disappear after 5 seconds
-                setTimeout(function () {
-                    $("#response-message").slideUp();
-                }, 5000);
+                    if (response === "Success") {
+                        $("#response-message")
+                            .html("✅ Thank you for reaching out! I'll get back to you soon.")
+                            .removeClass("error")
+                            .addClass("success")
+                            .slideDown();
+
+                        $("#submit-form")[0].reset();
+
+                        // Hide success message after 5 seconds
+                        setTimeout(function () {
+                            $("#response-message").slideUp();
+                        }, 5000);
+                    } else {
+                        $("#response-message")
+                            .html("❌ Something went wrong. Please try again.")
+                            .removeClass("success")
+                            .addClass("error")
+                            .slideDown();
+                    }
                 },
-                error: function (err) {
-                    console.log("Error:", err);
+                error: function () {
                     $("#response-message")
-                        .html("❌ Oops! Something went wrong. Please try again later.")
+                        .html("❌ Error: Could not submit the form. Please try again later.")
                         .removeClass("success")
                         .addClass("error")
                         .slideDown();
