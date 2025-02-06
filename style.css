@@ -14,7 +14,7 @@
     --second-bg-color: #131313;
     --text-color: white;
     --main-color: #b1b7b6;
-
+    
 }
 
 html {
@@ -127,7 +127,8 @@ span {
 .home-img img {
     position: relative;
     top: 4rem;
-    width: 28vw;
+    height: 400px;
+    width: 400px;
     border-radius: 50%;
     box-shadow: 0 0 25px var(--main-color);
     cursor: pointer;
@@ -464,52 +465,14 @@ span {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     align-items: center;
-    gap: 3.5rem;
+    gap: 2.5rem;
 }
 
 .resume-container {
     max-width: 100%;
-    height: 600px;
-    /* Adjust height as needed */
-    border: 2px solid #ccc;
-    overflow: hidden;
-    /* Enables scrolling */
-}
-
-/* Make the resume container responsive */
-/* Medium screens (tablets) */
-@media (max-width: 992px) {
-    .portfolio-container {
-        grid-template-columns: 1fr;
-        /* 1 column layout */
-    }
-
-    .resume-container {
-        max-width: 90%;
-        height: 500px;
-    }
-}
-
-/* Small screens (mobile devices) */
-@media (max-width: 768px) {
-    .resume-container {
-        max-width: 95%;
-        height: 400px;
-    }
-}
-
-/* Extra small screens */
-@media (max-width: 480px) {
-    .resume-container {
-        max-width: 100%;
-        height: 350px;
-    }
-}
-
-iframe {
-    width: 100%;
     height: 100%;
-    border: none;
+    /* Adjust height as needed */
+    overflow: hidden;
 }
 
 .portfolio-box {
@@ -812,6 +775,11 @@ iframe {
         left: 0;
     }
 
+    .home-img img {
+        height: 250px;
+        width: 250px;
+    }
+
     .services {
         padding-bottom: 7rem;
     }
@@ -868,6 +836,11 @@ iframe {
         margin: 5rem 4rem;
     }
 
+    .home-img img {
+        height: 200px;
+        width: 200px;
+    }
+
     .home-content h3 {
         font-size: 2.6rem;
     }
@@ -882,8 +855,8 @@ iframe {
         margin: 0 auto;
     }
 
-    .home-img img {
-        width: 56vw;
+    .education h2 {
+        font-size: 3.4rem;
     }
 
     .services h2 {
@@ -896,6 +869,7 @@ iframe {
 
     .projects h2 {
         margin-bottom: 3rem;
+        font-size: 2.4rem;
     }
 
     .project-container {
@@ -909,4 +883,9 @@ iframe {
     .portfolio h2 {
         margin-bottom: 3rem;
     }
+
+    .project-info p{
+        margin-bottom: 20px;
+    }
+
 }
